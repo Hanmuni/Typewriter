@@ -1,49 +1,70 @@
-let textInput = "";
-
 const textEl = document.querySelector("#text");
 const textInputEl = document.querySelector("#text-input");
+const cursorEl = document.querySelector("#cursor");
 
 const keySound = new Audio("./assets/key.mp3");
 const enterSound = new Audio("./assets/enter.mp3");
 const backspaceSound = new Audio("./assets/backspace.mp3");
 
-const createLetterElements = (rawText) => {
-  return rawText.split("").map((char) => {
-    if (char === "\n") {
-      return document.createElement("br");
-    }
-
-    const letterEl = document.createElement("span");
-    letterEl.textContent = char;
-    letterEl.classList.add("character");
-    return letterEl;
-  });
-};
-
-const updateTextDisplay = () => {
-  textInput = textInputEl.value;
-
-  const letterElements = createLetterElements(textInput);
-
-  const cursorEl = document.createElement("span");
-  cursorEl.textContent = "|";
-  cursorEl.classList.add("cursor");
-
-  textEl.replaceChildren(...letterElements, cursorEl);
-};
-
 const playKeySound = (e) => {
+  if (
+    e.key === "Shift" ||
+    e.key === "Meta" ||
+    e.key === "Control" ||
+    e.key === "Alt" ||
+    e.key === "Tab" ||
+    e.key === "CapsLock" ||
+    e.key === "ArrowLeft" ||
+    e.key === "ArrowRight" ||
+    e.key === "ArrowUp" ||
+    e.key === "ArrowDown" ||
+    e.key === "Escape"
+  ) {
+    return;
+  }
+
   if (e.key === "Enter") {
     enterSound.currentTime = 0;
     enterSound.play();
-  } else if (e.key === "Backspace") {
+    return;
+  }
+
+  if (e.key === "Backspace") {
     backspaceSound.currentTime = 0;
     backspaceSound.play();
-  } else {
-    keySound.currentTime = 0;
-    keySound.play();
+    return;
+  }
+
+  keySound.currentTime = 0;
+  keySound.play();
+};
+
+const updateTextDisplay = () => {
+  const currentText = textInputEl.value;
+
+  while (currentText.length > document.querySelectorAll(".character").length) {
+    const currentSpanCount = document.querySelectorAll(".character").length;
+    const addedCharacter = currentText[currentSpanCount];
+
+    let newSpanEl;
+
+    if (addedCharacter === "\n") {
+      newSpanEl = document.createElement("br");
+      newSpanEl.classList.add("character");
+    } else {
+      newSpanEl = document.createElement("span");
+      newSpanEl.textContent = addedCharacter;
+      newSpanEl.classList.add("character");
+    }
+    cursorEl.before(newSpanEl);
+  }
+
+  while (currentText.length < document.querySelectorAll(".character").length) {
+    if (cursorEl.previousElementSibling) {
+      cursorEl.previousElementSibling.remove();
+    }
   }
 };
 
-textInputEl.addEventListener("input", updateTextDisplay);
 textInputEl.addEventListener("keydown", playKeySound);
+textInputEl.addEventListener("input", updateTextDisplay);
