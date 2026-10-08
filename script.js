@@ -6,20 +6,22 @@ const keySound = new Audio("./assets/key.mp3");
 const enterSound = new Audio("./assets/enter.mp3");
 const backspaceSound = new Audio("./assets/backspace.mp3");
 
+const ignoredKeys = [
+  "Shift",
+  "Meta",
+  "Control",
+  "Alt",
+  "Tab",
+  "CapsLock",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowUp",
+  "ArrowDown",
+  "Escape",
+];
+
 const playKeySound = (e) => {
-  if (
-    e.key === "Shift" ||
-    e.key === "Meta" ||
-    e.key === "Control" ||
-    e.key === "Alt" ||
-    e.key === "Tab" ||
-    e.key === "CapsLock" ||
-    e.key === "ArrowLeft" ||
-    e.key === "ArrowRight" ||
-    e.key === "ArrowUp" ||
-    e.key === "ArrowDown" ||
-    e.key === "Escape"
-  ) {
+  if (ignoredKeys.includes(e.key)) {
     return;
   }
 
